@@ -1,6 +1,6 @@
-# Binaries & release output
-argus
-argus.exe
+# Binaries & release output (root-anchored: MUST NOT match cmd/argus/ sources)
+/argus
+/argus.exe
 mockollama.exe
 dist/
 
