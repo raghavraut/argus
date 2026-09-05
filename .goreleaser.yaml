@@ -1,0 +1,57 @@
+# GoReleaser v2 configuration for Project Argus.
+# Local snapshot test:  make snapshot   (or: goreleaser release --snapshot --clean)
+# Full release (CI on tag v*): goreleaser release --clean
+version: 2
+
+project_name: argus
+
+before:
+  hooks:
+    - go mod tidy
+    - go vet ./...
+
+builds:
+  - id: argus
+    main: ./cmd/argus
+    binary: argus
+    goos: [linux, darwin, windows]
+    goarch: [amd64, arm64]
+    ignore:
+      # Windows/arm64 has no ProjectDiscovery CI coverage; skip it.
+      - goos: windows
+        goarch: arm64
+    ldflags:
+      - -s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.CommitDate}}
+    env:
+      - CGO_ENABLED=0
+
+archives:
+  - id: default
+    formats: [tar.gz]
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    files:
+      - README.md
+
+checksum:
+  name_template: checksums.txt
+
+changelog:
+  sort: asc
+  use: github
+  groups:
+    - title: Features
+      regexp: "^.*feat[(\\w)]*:+.*$"
+      order: 0
+    - title: "Bug fixes"
+      regexp: "^.*fix[(\\w)]*:+.*$"
+      order: 1
+    - title: Other
+      order: 999
+
+release:
+  prerelease: auto
+  draft: false
+  name_template: "{{.ProjectName}} {{.Version}}"

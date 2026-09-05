@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Argus Triage — {{.Campaign}}</title>
+<link rel="stylesheet" href="/static/style.css">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+</head>
+<body>
+<header>
+  <h1>ARGUS <span class="sub">triage</span></h1>
+  <div class="controls">
+    <label>Campaign
+      <select id="campaign"></select>
+    </label>
+    <span id="stats" class="stats"></span>
+  </div>
+  <nav>
+    <button id="tab-graph" class="tab active">Graph</button>
+    <button id="tab-corpus" class="tab">Corpus</button>
+  </nav>
+</header>
+
+<main>
+  <section id="view-graph" class="view active">
+    <div id="graph-wrap">
+      <pre id="mermaid-src" class="mermaid">graph LR
+  empty[no graph persisted — run argus scan]</pre>
+      <p id="graph-note" class="note" hidden>mermaid.js failed to load (offline?). Raw diagram source shown above; corpus table still works.</p>
+    </div>
+    <aside id="panel" hidden>
+      <button id="panel-close" title="close">×</button>
+      <h2 id="p-asset"></h2>
+      <dl>
+        <dt>Score</dt><dd id="p-score"></dd>
+        <dt>Confidence</dt><dd id="p-conf"></dd>
+        <dt>Rarity</dt><dd id="p-rarity"></dd>
+        <dt>Status / Title</dt><dd id="p-title"></dd>
+        <dt>Tech</dt><dd id="p-tech"></dd>
+        <dt>Recommendation</dt><dd id="p-rec"></dd>
+      </dl>
+      <h3>Evidence</h3>
+      <ul id="p-evidence"></ul>
+      <h3>Headers</h3>
+      <pre id="p-headers"></pre>
+      <h3>Nuclei findings</h3>
+      <ul id="p-findings"></ul>
+    </aside>
+  </section>
+
+  <section id="view-corpus" class="view">
+    <div class="controls">
+      <input id="q" type="search" placeholder="filter assets, tech, title…">
+      <label><input id="band-only" type="checkbox"> ambiguity band only (0.15–0.6)</label>
+    </div>
+    <table id="assets">
+      <thead><tr>
+        <th data-k="asset">Asset</th>
+        <th data-k="score">Score</th>
+        <th data-k="confidence">Conf</th>
+        <th data-k="rarity">Rarity</th>
+        <th data-k="status">Status</th>
+        <th data-k="title">Title</th>
+        <th data-k="tech">Tech</th>
+        <th data-k="recommendation">Recommendation</th>
+        <th data-k="finding_count">Findings</th>
+      </tr></thead>
+      <tbody></tbody>
+    </table>
+  </section>
+</main>
+
+<script>
+window.ARGUS = { campaign: {{.CampaignJSON}}, bandLo: {{.BandLo}}, bandHi: {{.BandHi}} };
+</script>
+<script src="/static/app.js"></script>
+</body>
+</html>

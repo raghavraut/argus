@@ -1,0 +1,41 @@
+# Binaries & release output
+argus
+argus.exe
+mockollama.exe
+dist/
+
+# SQLite state (resume stores, WAL sidecars)
+*.db
+*.db-wal
+*.db-shm
+*.db-journal
+
+# Live-fire tuning + scan outputs
+corpus*.json
+scan*.jsonl
+all-base.jsonl
+top20.txt
+triage-notes.md
+
+# Graph renders
+*.dot
+*.mmd
+surface.png
+
+# Enumerated target lists (may embed scope; regenerate via subfinder)
+subs*.txt
+seclists*.txt
+qa-targets.txt
+
+# Redirected run logs
+*.stderr.txt
+*.stdout.txt
+live.stdout.txt
+live.stderr.txt
+
+# Tool sidecars
+nt-update.out.txt
+nt-update.err.txt
+subfinder.err.txt
+ui_*.html
+ui.err.txt
