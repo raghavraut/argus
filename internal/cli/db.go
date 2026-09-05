@@ -6,7 +6,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/argus/argus/internal/state"
+	"github.com/raghavraut/argus/internal/state"
 )
 
 func newDB() *cobra.Command {

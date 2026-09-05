@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/argus/argus/internal/core"
+	"github.com/raghavraut/argus/internal/core"
 )
 
 func mkResp(asset string, status int, title, body string, headers map[string]string) core.HTTPResponse {

@@ -12,7 +12,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/argus/argus/internal/core"
+	"github.com/raghavraut/argus/internal/core"
 )
 
 // ResultRow is one persisted final verdict with its probe context.

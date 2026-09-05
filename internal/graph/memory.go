@@ -12,7 +12,7 @@ import (
 	"hash/fnv"
 	"sync"
 
-	"github.com/argus/argus/internal/core"
+	"github.com/raghavraut/argus/internal/core"
 )
 
 const (

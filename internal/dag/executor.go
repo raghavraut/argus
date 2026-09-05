@@ -9,7 +9,7 @@ import (
 	"context"
 	"sync"
 
-	"github.com/argus/argus/internal/core"
+	"github.com/raghavraut/argus/internal/core"
 )
 
 // Handler executes one task.

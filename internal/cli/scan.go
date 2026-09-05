@@ -14,15 +14,15 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/argus/argus/internal/core"
-	"github.com/argus/argus/internal/dag"
-	"github.com/argus/argus/internal/graph"
-	"github.com/argus/argus/internal/llm"
-	"github.com/argus/argus/internal/nuclei"
-	"github.com/argus/argus/internal/output"
-	"github.com/argus/argus/internal/probe"
-	"github.com/argus/argus/internal/state"
-	"github.com/argus/argus/internal/triage"
+	"github.com/raghavraut/argus/internal/core"
+	"github.com/raghavraut/argus/internal/dag"
+	"github.com/raghavraut/argus/internal/graph"
+	"github.com/raghavraut/argus/internal/llm"
+	"github.com/raghavraut/argus/internal/nuclei"
+	"github.com/raghavraut/argus/internal/output"
+	"github.com/raghavraut/argus/internal/probe"
+	"github.com/raghavraut/argus/internal/state"
+	"github.com/raghavraut/argus/internal/triage"
 )
 
 // scanOpts binds every `argus scan` flag.

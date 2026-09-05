@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/argus/argus/internal/core"
+	"github.com/raghavraut/argus/internal/core"
 )
 
 func baseResult(score float64) core.TriageResult {

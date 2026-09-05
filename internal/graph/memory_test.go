@@ -5,7 +5,7 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/argus/argus/internal/core"
+	"github.com/raghavraut/argus/internal/core"
 )
 
 func TestPropagateTerminatesOnCycle(t *testing.T) {

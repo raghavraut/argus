@@ -8,7 +8,7 @@ package main
 import (
 	"os"
 
-	"github.com/argus/argus/internal/cli"
+	"github.com/raghavraut/argus/internal/cli"
 )
 
 func main() {

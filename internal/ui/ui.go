@@ -14,9 +14,9 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/argus/argus/internal/export"
-	"github.com/argus/argus/internal/state"
-	"github.com/argus/argus/internal/triage"
+	"github.com/raghavraut/argus/internal/export"
+	"github.com/raghavraut/argus/internal/state"
+	"github.com/raghavraut/argus/internal/triage"
 )
 
 //go:embed templates/* static/*

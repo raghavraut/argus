@@ -14,9 +14,9 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/argus/argus/internal/output"
-	"github.com/argus/argus/internal/state"
-	"github.com/argus/argus/internal/ui"
+	"github.com/raghavraut/argus/internal/output"
+	"github.com/raghavraut/argus/internal/state"
+	"github.com/raghavraut/argus/internal/ui"
 )
 
 type uiOpts struct {

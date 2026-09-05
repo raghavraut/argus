@@ -7,7 +7,7 @@ package llm
 import (
 	"strings"
 
-	"github.com/argus/argus/internal/core"
+	"github.com/raghavraut/argus/internal/core"
 )
 
 // Verdict confidence floor: below this the model is guessing, ignore it.

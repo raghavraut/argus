@@ -6,9 +6,9 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/argus/argus/internal/export"
-	"github.com/argus/argus/internal/output"
-	"github.com/argus/argus/internal/state"
+	"github.com/raghavraut/argus/internal/export"
+	"github.com/raghavraut/argus/internal/output"
+	"github.com/raghavraut/argus/internal/state"
 )
 
 type exportOpts struct {

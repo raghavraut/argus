@@ -12,7 +12,7 @@ import (
 	"io"
 	"sort"
 
-	"github.com/argus/argus/internal/core"
+	"github.com/raghavraut/argus/internal/core"
 )
 
 // DocDump is one asset's tuning record.

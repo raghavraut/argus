@@ -1,4 +1,4 @@
-module github.com/argus/argus
+module github.com/raghavraut/argus
 
 go 1.26.0
 

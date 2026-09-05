@@ -17,8 +17,8 @@ import (
 	"github.com/projectdiscovery/goflags"
 	"github.com/projectdiscovery/httpx/runner"
 
-	"github.com/argus/argus/internal/core"
-	"github.com/argus/argus/internal/triage"
+	"github.com/raghavraut/argus/internal/core"
+	"github.com/raghavraut/argus/internal/triage"
 )
 
 const (
