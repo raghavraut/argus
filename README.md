@@ -39,18 +39,13 @@
 
 ## 📦 Installation
 
-**Go install** (Go ≥ 1.26):
+**Go install** (Go ≥ 1.26). The `-v` flag is intentional — it streams
+each package as it compiles, since the dependency tree takes a few
+minutes on first install and is otherwise silent:
 
 ```sh
-go install github.com/raghavraut/rarefy/cmd/rarefy@latest
+go install -v github.com/raghavraut/rarefy/cmd/rarefy@latest
 ```
-
-> `go install` is silent on success. Add `-v` to watch each package compile,
-> which is useful on first install when the dependency tree is large:
->
-> ```sh
-> go install -v github.com/raghavraut/rarefy/cmd/rarefy@latest
-> ```
 
 **Binary release** — Linux, macOS, Windows (amd64/arm64) via [GitHub Releases](https://github.com/raghavraut/rarefy/releases):
 
