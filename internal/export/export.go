@@ -13,7 +13,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/raghavraut/argus/internal/core"
+	"github.com/raghavraut/rarefy/internal/core"
 )
 
 // Format selects the renderer.
@@ -130,7 +130,7 @@ func WriteDOT(w io.Writer, nodes []core.Node, edges []core.Edge, opts Options) e
 	for _, n := range sel {
 		keep[n.ID] = true
 	}
-	if _, err := io.WriteString(w, "digraph argus {\n  rankdir=LR;\n  node [style=filled];\n"); err != nil {
+	if _, err := io.WriteString(w, "digraph rarefy {\n  rankdir=LR;\n  node [style=filled];\n"); err != nil {
 		return err
 	}
 	for _, n := range sel {

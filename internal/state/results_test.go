@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/raghavraut/argus/internal/core"
+	"github.com/raghavraut/rarefy/internal/core"
 )
 
 func seedResults(t *testing.T, s *Store) {

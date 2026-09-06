@@ -6,7 +6,7 @@
 //   - risky protocols excluded (headless, code, javascript, workflow)
 //   - sandbox: no local file access, local network restricted
 //   - no template auto-upgrade (hermetic, offline-safe init)
-//   - strict context timeout: a hanging template can never deadlock Argus
+//   - strict context timeout: a hanging template can never deadlock Rarefy
 //   - stdout contract: findings stream as {"type":"nuclei_finding",...} lines,
 //     engine-owned output stays on the in-memory mock writer (never stdout)
 package nuclei

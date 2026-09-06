@@ -14,18 +14,18 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/raghavraut/argus/internal/core"
-	"github.com/raghavraut/argus/internal/dag"
-	"github.com/raghavraut/argus/internal/graph"
-	"github.com/raghavraut/argus/internal/llm"
-	"github.com/raghavraut/argus/internal/nuclei"
-	"github.com/raghavraut/argus/internal/output"
-	"github.com/raghavraut/argus/internal/probe"
-	"github.com/raghavraut/argus/internal/state"
-	"github.com/raghavraut/argus/internal/triage"
+	"github.com/raghavraut/rarefy/internal/core"
+	"github.com/raghavraut/rarefy/internal/dag"
+	"github.com/raghavraut/rarefy/internal/graph"
+	"github.com/raghavraut/rarefy/internal/llm"
+	"github.com/raghavraut/rarefy/internal/nuclei"
+	"github.com/raghavraut/rarefy/internal/output"
+	"github.com/raghavraut/rarefy/internal/probe"
+	"github.com/raghavraut/rarefy/internal/state"
+	"github.com/raghavraut/rarefy/internal/triage"
 )
 
-// scanOpts binds every `argus scan` flag.
+// scanOpts binds every `rarefy scan` flag.
 type scanOpts struct {
 	domain       string
 	listFile     string
@@ -52,9 +52,9 @@ func newScan() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "scan [-d domain] [-l list] [target...]",
 		Short: "Probe targets, score with TF-IDF rarity, stream JSONL to stdout",
-		Example: `  argus scan -d target.com --profile stealth | nuclei -tags exposure
-  argus scan -l subs.txt --profile standard
-  echo evil.target.com | argus scan --export-corpus corpus.json`,
+		Example: `  rarefy scan -d target.com --profile stealth | nuclei -tags exposure
+  rarefy scan -l subs.txt --profile standard
+  echo evil.target.com | rarefy scan --export-corpus corpus.json`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return runScan(cmd.Context(), args, o)
 		},
@@ -63,7 +63,7 @@ func newScan() *cobra.Command {
 	f.StringVarP(&o.domain, "domain", "d", "", "target domain (comma-separated; use -l for lists)")
 	f.StringVarP(&o.listFile, "list", "l", "", "BYOS: file with one subdomain/URL per line, injected straight into the DAG (skips enumeration)")
 	f.StringVar(&o.profile, "profile", "standard", "execution profile: stealth|standard|aggressive")
-	f.StringVar(&o.dbPath, "db", "argus.db", "SQLite state path for resume")
+	f.StringVar(&o.dbPath, "db", "rarefy.db", "SQLite state path for resume")
 	f.StringVar(&o.campaign, "campaign", "", "campaign id (defaults to -d value or timestamp)")
 	f.StringVar(&o.ollamaURL, "ollama", "http://localhost:11434", "Ollama base URL (empty disables LLM)")
 	f.StringVar(&o.ollamaModel, "model", "llama3.1:8b", "Ollama model for ambiguous triage")
@@ -81,7 +81,7 @@ func newScan() *cobra.Command {
 }
 
 func runScan(ctx context.Context, args []string, o *scanOpts) error {
-	log := output.Logger("[argus] ")
+	log := output.Logger("[rarefy] ")
 	out := output.NewWriter(os.Stdout)
 
 	ctx, stop := signal.NotifyContext(ctx, os.Interrupt, syscall.SIGTERM)
@@ -387,7 +387,7 @@ func runNucleiPostStep(ctx context.Context, log interface{ Printf(string, ...any
 	log.Printf("nuclei: scanned=%d findings=%d tags=%v", len(targets), n, o.nucleiTags)
 }
 
-// persistGraph snapshots the in-memory graph into SQLite for `argus export`.
+// persistGraph snapshots the in-memory graph into SQLite for `rarefy export`.
 func persistGraph(ctx context.Context, log interface{ Printf(string, ...any) }, store *state.Store, camp string, g *graph.MemoryGraph) error {
 	nodes, edges, err := g.Snapshot(ctx)
 	if err != nil {

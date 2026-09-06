@@ -2,7 +2,7 @@
 //
 // results stores one row per (campaign, asset): the exact JSONL blob that
 // was emitted on stdout plus indexed columns (score, confidence, tech)
-// so `argus filter` and `argus ui` can slice without re-scoring.
+// so `rarefy filter` and `rarefy ui` can slice without re-scoring.
 // All WHERE values are bound parameters — filter flags never touch SQL text.
 package state
 
@@ -12,7 +12,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/raghavraut/argus/internal/core"
+	"github.com/raghavraut/rarefy/internal/core"
 )
 
 // ResultRow is one persisted final verdict with its probe context.

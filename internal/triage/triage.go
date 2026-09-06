@@ -15,7 +15,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/raghavraut/argus/internal/core"
+	"github.com/raghavraut/rarefy/internal/core"
 )
 
 const (

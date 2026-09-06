@@ -11,7 +11,7 @@ import (
 	"os"
 	"sync"
 
-	"github.com/raghavraut/argus/internal/core"
+	"github.com/raghavraut/rarefy/internal/core"
 )
 
 // Writer is a goroutine-safe JSONL emitter to stdout.

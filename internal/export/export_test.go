@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/raghavraut/argus/internal/core"
+	"github.com/raghavraut/rarefy/internal/core"
 )
 
 func cyclicGraph() ([]core.Node, []core.Edge) {
@@ -34,7 +34,7 @@ func TestDOTCycleAndDedupe(t *testing.T) {
 		t.Fatal(err)
 	}
 	out := b.String()
-	if !strings.HasPrefix(out, "digraph argus {") || !strings.HasSuffix(out, "}\n") {
+	if !strings.HasPrefix(out, "digraph rarefy {") || !strings.HasSuffix(out, "}\n") {
 		t.Fatalf("bad DOT envelope:\n%s", out)
 	}
 	// Duplicate redirect edge must render exactly once per direction.

@@ -14,9 +14,9 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/raghavraut/argus/internal/output"
-	"github.com/raghavraut/argus/internal/state"
-	"github.com/raghavraut/argus/internal/ui"
+	"github.com/raghavraut/rarefy/internal/output"
+	"github.com/raghavraut/rarefy/internal/state"
+	"github.com/raghavraut/rarefy/internal/ui"
 )
 
 type uiOpts struct {
@@ -31,14 +31,14 @@ func newUI() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "ui",
 		Short: "Serve the local triage dashboard (graph + corpus views)",
-		Example: `  argus ui --port 8080
-  argus ui --campaign target.com --open`,
+		Example: `  rarefy ui --port 8080
+  rarefy ui --campaign target.com --open`,
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			return runUI(cmd.Context(), o)
 		},
 	}
 	f := cmd.Flags()
-	f.StringVar(&o.dbPath, "db", "argus.db", "SQLite state path")
+	f.StringVar(&o.dbPath, "db", "rarefy.db", "SQLite state path")
 	f.StringVar(&o.campaign, "campaign", "", "campaign to serve (defaults to most recent)")
 	f.IntVar(&o.port, "port", 8080, "local port to listen on")
 	f.BoolVar(&o.open, "open", false, "open the dashboard in the default browser")
@@ -46,7 +46,7 @@ func newUI() *cobra.Command {
 }
 
 func runUI(ctx context.Context, o *uiOpts) error {
-	log := output.Logger("[argus] ")
+	log := output.Logger("[rarefy] ")
 	store, err := state.Open(o.dbPath)
 	if err != nil {
 		return fmt.Errorf("state: %w", err)
@@ -60,7 +60,7 @@ func runUI(ctx context.Context, o *uiOpts) error {
 			return fmt.Errorf("latest campaign: %w", err)
 		}
 		if camp == "" {
-			return fmt.Errorf("no campaigns in %s: run `argus scan` first", o.dbPath)
+			return fmt.Errorf("no campaigns in %s: run `rarefy scan` first", o.dbPath)
 		}
 	}
 	srv, err := ui.New(store, camp)
@@ -105,6 +105,6 @@ func openBrowser(url string) {
 		cmd = exec.Command("xdg-open", url)
 	}
 	if err := cmd.Start(); err != nil {
-		output.Logger("[argus] ").Printf("ui: could not open browser: %v", err)
+		output.Logger("[rarefy] ").Printf("ui: could not open browser: %v", err)
 	}
 }

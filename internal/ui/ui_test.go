@@ -9,8 +9,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/raghavraut/argus/internal/core"
-	"github.com/raghavraut/argus/internal/state"
+	"github.com/raghavraut/rarefy/internal/core"
+	"github.com/raghavraut/rarefy/internal/state"
 )
 
 func seed(t *testing.T, path string) {
@@ -77,7 +77,7 @@ func TestIndexRenders(t *testing.T) {
 		t.Fatalf("index code=%d", w.Code)
 	}
 	body := w.Body.String()
-	for _, want := range []string{"ARGUS", "view-graph", "view-corpus", "mermaid.min.js", "/static/app.js"} {
+	for _, want := range []string{"RAREFY", "view-graph", "view-corpus", "mermaid.min.js", "/static/app.js"} {
 		if !strings.Contains(body, want) {
 			t.Fatalf("index missing %q", want)
 		}

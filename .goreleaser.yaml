@@ -1,9 +1,9 @@
-# GoReleaser v2 configuration for Project Argus.
+# GoReleaser v2 configuration for Project Rarefy.
 # Local snapshot test:  make snapshot   (or: goreleaser release --snapshot --clean)
 # Full release (CI on tag v*): goreleaser release --clean
 version: 2
 
-project_name: argus
+project_name: rarefy
 
 before:
   hooks:
@@ -11,9 +11,9 @@ before:
     - go vet ./...
 
 builds:
-  - id: argus
-    main: ./cmd/argus
-    binary: argus
+  - id: rarefy
+    main: ./cmd/rarefy
+    binary: rarefy
     goos: [linux, darwin, windows]
     goarch: [amd64, arm64]
     ignore:

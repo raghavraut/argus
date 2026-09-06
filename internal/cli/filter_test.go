@@ -7,8 +7,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/raghavraut/argus/internal/core"
-	"github.com/raghavraut/argus/internal/state"
+	"github.com/raghavraut/rarefy/internal/core"
+	"github.com/raghavraut/rarefy/internal/state"
 )
 
 // BYOS: amass/subfinder pastes tolerate comments, raw URLs, ports, dupes.

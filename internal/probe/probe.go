@@ -1,7 +1,7 @@
 // Package probe wraps ProjectDiscovery engines as Go libraries (no os/exec).
 //
 // Concurrency fix: a single httpx Runner owns its internal worker pool.
-// Argus never wraps it in a second pool — targets are handed to httpx once
+// Rarefy never wraps it in a second pool — targets are handed to httpx once
 // via InputTargetHost and results return through the OnResult callback.
 package probe
 
@@ -17,8 +17,8 @@ import (
 	"github.com/projectdiscovery/goflags"
 	"github.com/projectdiscovery/httpx/runner"
 
-	"github.com/raghavraut/argus/internal/core"
-	"github.com/raghavraut/argus/internal/triage"
+	"github.com/raghavraut/rarefy/internal/core"
+	"github.com/raghavraut/rarefy/internal/triage"
 )
 
 const (

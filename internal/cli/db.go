@@ -6,7 +6,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/raghavraut/argus/internal/state"
+	"github.com/raghavraut/rarefy/internal/state"
 )
 
 func newDB() *cobra.Command {
@@ -38,7 +38,7 @@ func newDBStats() *cobra.Command {
 			return enc.Encode(stats)
 		},
 	}
-	cmd.Flags().StringVar(&dbPath, "db", "argus.db", "SQLite state path")
+	cmd.Flags().StringVar(&dbPath, "db", "rarefy.db", "SQLite state path")
 	return cmd
 }
 
@@ -48,8 +48,8 @@ func newDBReset() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "reset",
 		Short: "Delete resume state (one campaign or everything)",
-		Example: `  argus db reset --campaign target.com
-  argus db reset --all`,
+		Example: `  rarefy db reset --campaign target.com
+  rarefy db reset --all`,
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			if !all && campaign == "" {
 				return fmt.Errorf("pass --campaign NAME or --all")
@@ -77,7 +77,7 @@ func newDBReset() *cobra.Command {
 			return nil
 		},
 	}
-	cmd.Flags().StringVar(&dbPath, "db", "argus.db", "SQLite state path")
+	cmd.Flags().StringVar(&dbPath, "db", "rarefy.db", "SQLite state path")
 	cmd.Flags().StringVar(&campaign, "campaign", "", "campaign to wipe")
 	cmd.Flags().BoolVar(&all, "all", false, "wipe every campaign")
 	return cmd

@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Argus Triage — {{.Campaign}}</title>
+<title>Rarefy Triage — {{.Campaign}}</title>
 <link rel="stylesheet" href="/static/style.css">
 <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
 </head>
 <body>
 <header>
-  <h1>ARGUS <span class="sub">triage</span></h1>
+  <h1>RAREFY <span class="sub">triage</span></h1>
   <div class="controls">
     <label>Campaign
       <select id="campaign"></select>
@@ -26,7 +26,7 @@
   <section id="view-graph" class="view active">
     <div id="graph-wrap">
       <pre id="mermaid-src" class="mermaid">graph LR
-  empty[no graph persisted — run argus scan]</pre>
+  empty[no graph persisted — run rarefy scan]</pre>
       <p id="graph-note" class="note" hidden>mermaid.js failed to load (offline?). Raw diagram source shown above; corpus table still works.</p>
     </div>
     <aside id="panel" hidden>
@@ -72,7 +72,7 @@
 </main>
 
 <script>
-window.ARGUS = { campaign: {{.CampaignJSON}}, bandLo: {{.BandLo}}, bandHi: {{.BandHi}} };
+window.RAREFY = { campaign: {{.CampaignJSON}}, bandLo: {{.BandLo}}, bandHi: {{.BandHi}} };
 </script>
 <script src="/static/app.js"></script>
 </body>

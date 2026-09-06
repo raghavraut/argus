@@ -1,12 +1,12 @@
-# Project Argus — developer workflow.
-#   make build      compile ./cmd/argus to ./argus(.exe)
+# Project Rarefy — developer workflow.
+#   make build      compile ./cmd/rarefy to ./rarefy(.exe)
 #   make test       full unit suite
 #   make vet        static analysis
 #   make snapshot   local GoReleaser snapshot (dist/, no publish)
 #   make clean      remove build artifacts
 
-BINARY := argus
-PKG := ./cmd/argus
+BINARY := rarefy
+PKG := ./cmd/rarefy
 
 build:
 	go build -o $(BINARY) $(PKG)

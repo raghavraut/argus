@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/raghavraut/argus/internal/core"
-	"github.com/raghavraut/argus/internal/llm"
+	"github.com/raghavraut/rarefy/internal/core"
+	"github.com/raghavraut/rarefy/internal/llm"
 )
 
 // Happy path: the client parses mock taxonomy verdicts through the real

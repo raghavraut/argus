@@ -15,12 +15,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// NewRoot builds the `argus` command tree.
+// NewRoot builds the `rarefy` command tree.
 func NewRoot() *cobra.Command {
 	root := &cobra.Command{
-		Use:   "argus",
+		Use:   "rarefy",
 		Short: "Campaign-aware recon triage engine",
-		Long: `Project Argus answers one question: out of 5,000 subdomains, ` +
+		Long: `Project Rarefy answers one question: out of 5,000 subdomains, ` +
 			`which 15 are worth your time?
 
 Strict JSONL goes to stdout for Unix pipelines; all logs go to stderr.`,
@@ -30,7 +30,7 @@ Strict JSONL goes to stdout for Unix pipelines; all logs go to stderr.`,
 	return root
 }
 
-// Execute runs the CLI (called from cmd/argus/main.go).
+// Execute runs the CLI (called from cmd/rarefy/main.go).
 func Execute() error {
 	return NewRoot().Execute()
 }

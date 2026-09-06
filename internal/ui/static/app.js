@@ -1,7 +1,7 @@
-/* Argus triage UI — vanilla JS, no build step. */
+/* Rarefy triage UI — vanilla JS, no build step. */
 (function () {
   "use strict";
-  const S = window.ARGUS;
+  const S = window.RAREFY;
   let campaign = S.campaign;
   let nodeIndex = {}; // mermaid token -> asset
   let rows = [];

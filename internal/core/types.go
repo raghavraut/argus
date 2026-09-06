@@ -1,4 +1,4 @@
-// Package core defines the shared domain types and module contracts for Argus.
+// Package core defines the shared domain types and module contracts for Rarefy.
 //
 // The interfaces here are the extension points for the graph exporter
 // (Neo4j/DOT/Mermaid, deferred to a later iteration): keep EvidenceGraph

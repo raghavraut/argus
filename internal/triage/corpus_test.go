@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/raghavraut/argus/internal/core"
+	"github.com/raghavraut/rarefy/internal/core"
 )
 
 func TestDumpCorpusBands(t *testing.T) {

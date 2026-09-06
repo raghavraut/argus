@@ -1,4 +1,4 @@
-module github.com/raghavraut/argus
+module github.com/raghavraut/rarefy
 
 go 1.26.0
 

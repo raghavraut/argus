@@ -1,20 +1,20 @@
 <h1 align="center">
-  Argus
+  Rarefy
 </h1>
 
 <p align="center">
-  <img src="static/argus-demo.gif" alt="argus" width="500px">
+  <img src="static/rarefy-demo.gif" alt="rarefy" width="500px">
 </p>
 
 <p align="center">
   <a href="https://go.dev/"><img src="https://img.shields.io/badge/go-1.26-00ADD8?style=flat-square&logo=go" alt="Go Version"></a>
-  <a href="https://github.com/raghavraut/argus/releases"><img src="https://img.shields.io/github/v/release/raghavraut/argus?style=flat-square&logo=github" alt="GitHub Release"></a>
-  <a href="https://github.com/raghavraut/argus/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="License"></a>
-  <a href="https://goreportcard.com/report/github.com/raghavraut/argus"><img src="https://goreportcard.com/badge/github.com/raghavraut/argus?style=flat-square" alt="Go Report Card"></a>
+  <a href="https://github.com/raghavraut/rarefy/releases"><img src="https://img.shields.io/github/v/release/raghavraut/rarefy?style=flat-square&logo=github" alt="GitHub Release"></a>
+  <a href="https://github.com/raghavraut/rarefy/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="License"></a>
+  <a href="https://goreportcard.com/report/github.com/raghavraut/rarefy"><img src="https://goreportcard.com/badge/github.com/raghavraut/rarefy?style=flat-square" alt="Go Report Card"></a>
 </p>
 
 <p align="center">
-  <b>Argus is an AI-augmented, mathematically scored Attack Surface Triage engine that replaces manual subdomain inspection with TF-IDF rarity scoring and graph correlation.</b>
+  <b>Rarefy is an AI-augmented, mathematically scored Attack Surface Triage engine that replaces manual subdomain inspection with TF-IDF rarity scoring and graph correlation.</b>
 </p>
 
 <p align="center">
@@ -42,21 +42,28 @@
 **Go install** (Go ≥ 1.26):
 
 ```sh
-go install github.com/raghavraut/argus/cmd/argus@latest
+go install github.com/raghavraut/rarefy/cmd/rarefy@latest
 ```
 
-**Binary release** — Linux, macOS, Windows (amd64/arm64) via [GitHub Releases](https://github.com/raghavraut/argus/releases):
+> `go install` is silent on success. Add `-v` to watch each package compile,
+> which is useful on first install when the dependency tree is large:
+>
+> ```sh
+> go install -v github.com/raghavraut/rarefy/cmd/rarefy@latest
+> ```
+
+**Binary release** — Linux, macOS, Windows (amd64/arm64) via [GitHub Releases](https://github.com/raghavraut/rarefy/releases):
 
 ```sh
 # linux amd64 example
-curl -sL https://github.com/raghavraut/argus/releases/latest/download/argus_1.0.0_linux_amd64.tar.gz | tar xz
-./argus --help
+curl -sL https://github.com/raghavraut/rarefy/releases/latest/download/rarefy_1.0.0_linux_amd64.tar.gz | tar xz
+./rarefy --help
 ```
 
 **From source:**
 
 ```sh
-git clone https://github.com/raghavraut/argus && cd argus
+git clone https://github.com/raghavraut/rarefy && cd rarefy
 make build && make test
 ```
 
@@ -67,24 +74,24 @@ make build && make test
 ## 🚀 Usage
 
 ```
-argus scan    Probe targets, score with TF-IDF rarity, stream JSONL to stdout
-argus filter  Slice persisted verdicts by score, confidence and tech
-argus export  Render the evidence graph (Graphviz DOT or Mermaid)
-argus ui      Serve the local triage dashboard (graph + corpus views)
-argus db      Inspect and manage the SQLite resume store
+rarefy scan    Probe targets, score with TF-IDF rarity, stream JSONL to stdout
+rarefy filter  Slice persisted verdicts by score, confidence and tech
+rarefy export  Render the evidence graph (Graphviz DOT or Mermaid)
+rarefy ui      Serve the local triage dashboard (graph + corpus views)
+rarefy db      Inspect and manage the SQLite resume store
 ```
 
 ```sh
 # Bring your own subdomains (amass/subfinder paste-friendly)
-argus scan -l subs.txt --campaign target.com | tee verdicts.jsonl
+rarefy scan -l subs.txt --campaign target.com | tee verdicts.jsonl
 
 # Slice the winners
-argus filter --min-score 0.6 --format urls > top_targets.txt
-argus filter --tech Jenkins --format jsonl
+rarefy filter --min-score 0.6 --format urls > top_targets.txt
+rarefy filter --tech Jenkins --format jsonl
 
 # Render + inspect
-argus export --campaign target.com --format mermaid --out surface.mmd
-argus ui --campaign target.com --open
+rarefy export --campaign target.com --format mermaid --out surface.mmd
+rarefy ui --campaign target.com --open
 ```
 
 ### 🎯 Real-World Bug Bounty Pipeline
@@ -94,16 +101,16 @@ argus ui --campaign target.com --open
 subfinder -d target.com -silent | tee subs.txt
 
 # 2. Triage: provisional JSONL streams during probing, reranked finals after
-argus scan -l subs.txt --campaign target.com --export-corpus corpus.json \
+rarefy scan -l subs.txt --campaign target.com --export-corpus corpus.json \
   | tee verdicts.jsonl
 
 # 3. Extract high-value targets straight into nuclei
-argus filter --campaign target.com --min-score 0.6 --format urls \
+rarefy filter --campaign target.com --min-score 0.6 --format urls \
   | nuclei -tags exposure,misconfig -severity medium,high,critical
 
 # 4. The ambiguous middle goes to human review via the dashboard
-argus filter --campaign target.com --format markdown > triage-notes.md
-argus ui --campaign target.com --open
+rarefy filter --campaign target.com --format markdown > triage-notes.md
+rarefy ui --campaign target.com --open
 ```
 
 > Contract: **stdout is strict JSONL** (verdicts + `{"type":"nuclei_finding"}` lines) for pipes; **stderr is human logs**. Interrupted 10-hour scans resume with the same `--campaign` + `--db`.

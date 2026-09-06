@@ -1,7 +1,7 @@
 // Package ui serves the local triage dashboard.
 //
 // Single-binary constraint: templates and static assets are embedded with
-// go:embed, so `argus ui` needs no extra files. The frontend is vanilla
+// go:embed, so `rarefy ui` needs no extra files. The frontend is vanilla
 // JS/CSS (no build step); only mermaid.js loads from CDN, with a graceful
 // fallback to the corpus table when offline.
 package ui
@@ -14,9 +14,9 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/raghavraut/argus/internal/export"
-	"github.com/raghavraut/argus/internal/state"
-	"github.com/raghavraut/argus/internal/triage"
+	"github.com/raghavraut/rarefy/internal/export"
+	"github.com/raghavraut/rarefy/internal/state"
+	"github.com/raghavraut/rarefy/internal/triage"
 )
 
 //go:embed templates/* static/*
@@ -88,7 +88,7 @@ type indexData struct {
 func (s *Server) handleIndex(w http.ResponseWriter, r *http.Request) {
 	camp, ok := s.resolveCampaign(r)
 	if !ok {
-		http.Error(w, "no campaigns: run `argus scan` first", http.StatusNotFound)
+		http.Error(w, "no campaigns: run `rarefy scan` first", http.StatusNotFound)
 		return
 	}
 	cj, _ := json.Marshal(camp)

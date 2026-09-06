@@ -13,7 +13,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/raghavraut/argus/internal/core"
+	"github.com/raghavraut/rarefy/internal/core"
 
 	_ "modernc.org/sqlite"
 )
@@ -232,7 +232,7 @@ func (s *Store) Close() error {
 	return s.db.Close()
 }
 
-// --- Graph persistence (powers `argus export`) ---
+// --- Graph persistence (powers `rarefy export`) ---
 
 // SaveGraph replaces the campaign's stored graph snapshot in one transaction.
 // Idempotent: re-running a campaign overwrites, never duplicates.
@@ -323,7 +323,7 @@ func (s *Store) LoadGraph(ctx context.Context, campaign string) ([]core.Node, []
 	return nodes, edges, erows.Err()
 }
 
-// CampaignStats summarizes one campaign for `argus db stats`.
+// CampaignStats summarizes one campaign for `rarefy db stats`.
 type CampaignStats struct {
 	Campaign string `json:"campaign"`
 	Tasks    int    `json:"tasks"`

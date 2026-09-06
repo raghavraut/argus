@@ -16,7 +16,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/raghavraut/argus/internal/core"
+	"github.com/raghavraut/rarefy/internal/core"
 )
 
 const (

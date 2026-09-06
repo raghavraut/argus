@@ -1,4 +1,4 @@
-// Command argus is the Project Argus entry point.
+// Command rarefy is the Project Rarefy entry point.
 //
 // Contract: strict JSONL on stdout (provisional Final=false during Phase-1,
 // reranked Final=true after the TF-IDF pass), all logs on stderr.
@@ -8,7 +8,7 @@ package main
 import (
 	"os"
 
-	"github.com/raghavraut/argus/internal/cli"
+	"github.com/raghavraut/rarefy/internal/cli"
 )
 
 func main() {

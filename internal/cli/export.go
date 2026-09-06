@@ -6,9 +6,9 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/raghavraut/argus/internal/export"
-	"github.com/raghavraut/argus/internal/output"
-	"github.com/raghavraut/argus/internal/state"
+	"github.com/raghavraut/rarefy/internal/export"
+	"github.com/raghavraut/rarefy/internal/output"
+	"github.com/raghavraut/rarefy/internal/state"
 )
 
 type exportOpts struct {
@@ -24,14 +24,14 @@ func newExport() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "export [--format dot|mermaid]",
 		Short: "Render the persisted evidence graph (Graphviz DOT or Mermaid)",
-		Example: `  argus export --campaign target.com --format dot --out surface.dot
-  argus export --format mermaid | clip`,
+		Example: `  rarefy export --campaign target.com --format dot --out surface.dot
+  rarefy export --format mermaid | clip`,
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			return runExport(cmd, o)
 		},
 	}
 	f := cmd.Flags()
-	f.StringVar(&o.dbPath, "db", "argus.db", "SQLite state path")
+	f.StringVar(&o.dbPath, "db", "rarefy.db", "SQLite state path")
 	f.StringVar(&o.campaign, "campaign", "", "campaign to export (defaults to most active)")
 	f.StringVar(&o.format, "format", "dot", "output format: dot|mermaid")
 	f.StringVarP(&o.out, "out", "o", "", "output file (defaults to stdout)")
@@ -40,7 +40,7 @@ func newExport() *cobra.Command {
 }
 
 func runExport(cmd *cobra.Command, o *exportOpts) error {
-	log := output.Logger("[argus] ")
+	log := output.Logger("[rarefy] ")
 	store, err := state.Open(o.dbPath)
 	if err != nil {
 		return fmt.Errorf("state: %w", err)
@@ -55,7 +55,7 @@ func runExport(cmd *cobra.Command, o *exportOpts) error {
 			return fmt.Errorf("list campaigns: %w", err)
 		}
 		if len(stats) == 0 {
-			return fmt.Errorf("no campaigns in %s: run `argus scan` first", o.dbPath)
+			return fmt.Errorf("no campaigns in %s: run `rarefy scan` first", o.dbPath)
 		}
 		camp = stats[0].Campaign
 		log.Printf("export: no --campaign given, using most active %q", camp)
@@ -65,7 +65,7 @@ func runExport(cmd *cobra.Command, o *exportOpts) error {
 		return fmt.Errorf("load graph: %w", err)
 	}
 	if len(nodes) == 0 {
-		return fmt.Errorf("campaign %q has no persisted graph: re-run `argus scan` to persist it", camp)
+		return fmt.Errorf("campaign %q has no persisted graph: re-run `rarefy scan` to persist it", camp)
 	}
 
 	w := cmd.OutOrStdout()
