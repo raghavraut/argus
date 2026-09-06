@@ -55,8 +55,14 @@ tmp="$(mktemp -d)"
 trap 'rm -rf "$tmp"' EXIT
 
 dl() { # $1=url $2=dest — retries ride out transient CDN 404s
-  if have curl; then curl -fsSL --retry 3 --retry-all-errors --retry-delay 2 "$1" -o "$2";
-  else wget --tries=3 -qO "$2" "$1"; fi
+  if have curl; then
+    curl -fsSL --retry 3 --retry-all-errors --retry-delay 2 "$1" -o "$2" && return 0
+    code="$(curl -s -o /dev/null -w '%{http_code} <- %{url_effective}' "$1")"
+    fail "download failed [${code}]: $1"
+  else
+    wget --tries=3 -qO "$2" "$1" \
+      || fail "download failed: $1 (install curl for a detailed error)"
+  fi
 }
 echo "install: downloading $asset"
 dl "${base}/${asset}" "$tmp/pkg.tgz" \
