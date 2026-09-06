@@ -36,8 +36,13 @@ func NewRoot() *cobra.Command {
 }
 
 // Execute runs the CLI (called from cmd/rarefy/main.go).
-func Execute() error {
-	return NewRoot().Execute()
+// version is the build stamp shown by `rarefy --version`.
+func Execute(version string) error {
+	root := NewRoot()
+	if version != "" {
+		root.Version = version
+	}
+	return root.Execute()
 }
 
 // GhostFlags returns the stdlib flag names registered by third-party
