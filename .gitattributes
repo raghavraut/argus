@@ -1,4 +1,12 @@
-# Enforce LF for shell scripts (CRLF breaks shebang execution on Linux).
+# Default: normalize text files on commit (prevents CRLF drift from Windows).
+* text=auto
+# Enforce LF where it matters: shell shebangs, gofmt, and web static files.
 *.sh text eol=lf
-# Go sources always LF: keeps gofmt clean on Windows checkouts.
 *.go text eol=lf
+*.md text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.js text eol=lf
+*.css text eol=lf
+*.html text eol=lf
+*.json text eol=lf
