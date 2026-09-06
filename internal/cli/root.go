@@ -16,7 +16,9 @@ import (
 )
 
 // banner is the Rarefy ASCII wordmark shown in help output.
-const banner = "_|        \n" +
+// Row 1 carries a 26-space indent (36-column grid); trailing spaces are
+// significant — banner_test.go locks the exact bytes.
+const banner = "                          _|        \n" +
 	"   __|  _` |   __|  _ \\  |    |   | \n" +
 	"  |    (   |  |     __/  __|  |   | \n" +
 	" _|   \\__,_| _|   \\___| _|   \\__, | \n" +
