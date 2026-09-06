@@ -39,3 +39,6 @@ nt-update.err.txt
 subfinder.err.txt
 ui_*.html
 ui.err.txt
+
+# Internal briefs — never commit
+argus.txt
