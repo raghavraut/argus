@@ -64,7 +64,9 @@ sudo make install   # copies ./rarefy to /usr/local/bin
 
 ```sh
 go install -v github.com/raghavraut/rarefy/cmd/rarefy@latest   # -v shows progress; first build takes minutes
-sudo ln -s ~/go/bin/rarefy /usr/local/bin/rarefy               # option A: apt-like, works in every shell
+BIN="$(go env GOPATH)/bin/rarefy"                              # resolve path BEFORE sudo ($HOME changes under sudo)
+sudo ln -s "$BIN" /usr/local/bin/rarefy                        # option A: apt-like, works in every shell
+hash -r                                                        # forget bash's cached "not found"
 # or: echo 'export PATH="$PATH:$HOME/go/bin"' >> ~/.zshrc      # option B (use ~/.bashrc for bash)
 ```
 
