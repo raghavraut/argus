@@ -64,9 +64,27 @@ dl() { # $1=url $2=dest — retries ride out transient CDN 404s
       || fail "download failed: $1 (install curl for a detailed error)"
   fi
 }
+
+# api_asset_url resolves the browser download URL via the GitHub API —
+# a different resolution path for networks where /releases/download/ misbehaves.
+api_asset_url() { # $1=asset filename
+  local api="https://api.github.com/repos/${REPO}/releases/tags/${VERSION}"
+  if have curl; then
+    curl -fsSL "$api" | grep '"browser_download_url"' | grep -F "$1" | head -1 | cut -d'"' -f4
+  else
+    wget -qO- "$api" | grep '"browser_download_url"' | grep -F "$1" | head -1 | cut -d'"' -f4
+  fi
+}
 echo "install: downloading $asset"
-dl "${base}/${asset}" "$tmp/pkg.tgz" \
-  || fail "download failed — check https://github.com/${REPO}/releases"
+dl "${base}/${asset}" "$tmp/pkg.tgz" || {
+  echo "install: primary failed, trying API mirror" >&2
+  mirror="$(api_asset_url "$asset" || true)"
+  if [ -n "$mirror" ]; then
+    dl "$mirror" "$tmp/pkg.tgz" || fail "all mirrors failed for $asset"
+  else
+    fail "all mirrors failed for $asset"
+  fi
+}
 
 # --- checksum ---------------------------------------------------------------
 if have sha256sum; then
