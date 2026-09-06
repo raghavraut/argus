@@ -54,9 +54,9 @@ asset="rarefy_${VERSION}_${os}_${arch}.tar.gz"
 tmp="$(mktemp -d)"
 trap 'rm -rf "$tmp"' EXIT
 
-dl() { # $1=url $2=dest
-  if have curl; then curl -fsSL "$1" -o "$2";
-  else wget -qO "$2" "$1"; fi
+dl() { # $1=url $2=dest — retries ride out transient CDN 404s
+  if have curl; then curl -fsSL --retry 3 --retry-all-errors --retry-delay 2 "$1" -o "$2";
+  else wget --tries=3 -qO "$2" "$1"; fi
 }
 echo "install: downloading $asset"
 dl "${base}/${asset}" "$tmp/pkg.tgz" \
