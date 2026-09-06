@@ -53,3 +53,25 @@ func TestScanHelpListsCorpusFlag(t *testing.T) {
 		t.Fatalf("scan help missing --export-corpus:\n%s", help)
 	}
 }
+
+// Root help aggregates every subcommand's flags; subcommand help keeps
+// stock cobra rendering (children must not inherit the root template).
+func TestRootHelpAggregatesAllFlags(t *testing.T) {
+	root := NewRoot()
+	var b bytes.Buffer
+	root.SetOut(&b)
+	root.SetErr(&b)
+	root.SetArgs([]string{"--help"})
+	if err := root.Execute(); err != nil {
+		t.Fatal(err)
+	}
+	help := b.String()
+	for _, want := range []string{
+		"--export-corpus", "--min-score", "--nuclei-timeout",
+		"--max-nodes", "--labels", "Flags for every command",
+	} {
+		if !strings.Contains(help, want) {
+			t.Fatalf("root help missing %q", want)
+		}
+	}
+}

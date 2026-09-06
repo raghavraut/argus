@@ -174,9 +174,10 @@ func printVersionNotice(w io.Writer, buildVersion string) {
 	}
 	switch versionStatus(buildVersion, latest) {
 	case "current", "ahead":
-		fmt.Fprintf(w, "rarefy is up to date (%s).\n", latest)
+		fmt.Fprintf(w, "%s\n", styleGood("rarefy is up to date ("+latest+")."))
 	case "behind", "unknown":
-		fmt.Fprintf(w, "A newer rarefy is available: %s (you have %s).\nUpdate with: %s\n",
-			latest, strings.TrimSpace(buildVersion), updateInstallCmd)
+		fmt.Fprintf(w, "%s\n%s %s\n",
+			styleWarn("A newer rarefy is available: "+latest+" (you have "+strings.TrimSpace(buildVersion)+")."),
+			styleDim("Update with:"), styleCmd(updateInstallCmd))
 	}
 }
