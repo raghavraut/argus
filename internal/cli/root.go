@@ -15,15 +15,20 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// banner is the Rarefy ASCII wordmark shown in help output.
+const banner = "_|        \n" +
+	"   __|  _` |   __|  _ \\  |    |   | \n" +
+	"  |    (   |  |     __/  __|  |   | \n" +
+	" _|   \\__,_| _|   \\___| _|   \\__, | \n" +
+	"                             ____/  "
+
 // NewRoot builds the `rarefy` command tree.
 func NewRoot() *cobra.Command {
 	root := &cobra.Command{
 		Use:   "rarefy",
 		Short: "Campaign-aware recon triage engine",
-		Long: `Project Rarefy answers one question: out of 5,000 subdomains, ` +
-			`which 15 are worth your time?
-
-Strict JSONL goes to stdout for Unix pipelines; all logs go to stderr.`,
+		Long: banner + "\n\n" +
+			`Strict JSONL goes to stdout for Unix pipelines; all logs go to stderr.`,
 		SilenceUsage: true,
 	}
 	root.AddCommand(newScan(), newExport(), newFilter(), newEval(), newUI(), newDB())
