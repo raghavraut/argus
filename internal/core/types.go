@@ -20,21 +20,21 @@ const (
 type NodeType string
 
 const (
-	NodeAsset           NodeType = "asset"
-	NodeInfrastructure  NodeType = "infrastructure"
-	NodeIdentity        NodeType = "identity"
-	NodeSurface         NodeType = "surface"
+	NodeAsset          NodeType = "asset"
+	NodeInfrastructure NodeType = "infrastructure"
+	NodeIdentity       NodeType = "identity"
+	NodeSurface        NodeType = "surface"
 )
 
 // EdgeType classifies graph relationships.
 type EdgeType string
 
 const (
-	EdgeResolvesTo EdgeType = "RESOLVES_TO"
-	EdgeSharesCert EdgeType = "SHARES_CERT"
+	EdgeResolvesTo  EdgeType = "RESOLVES_TO"
+	EdgeSharesCert  EdgeType = "SHARES_CERT"
 	EdgeRedirectsTo EdgeType = "REDIRECTS_TO"
-	EdgeImportsJS  EdgeType = "IMPORTS_JS"
-	EdgeLinkedFrom EdgeType = "LINKED_FROM"
+	EdgeImportsJS   EdgeType = "IMPORTS_JS"
+	EdgeLinkedFrom  EdgeType = "LINKED_FROM"
 )
 
 // Node is a single vertex in the evidence graph.
@@ -63,20 +63,20 @@ type Asset struct {
 // Body is capped by the prober (see probe package). TokenCounts carries the
 // pre-tokenized signal counts so TF-IDF never needs the raw body.
 type HTTPResponse struct {
-	Asset        string         `json:"asset"`
-	StatusCode   int            `json:"status"`
-	Title        string         `json:"title"`
-	Headers      map[string]string `json:"headers,omitempty"`
-	BodyPreview  string         `json:"body_preview,omitempty"`
-	BodyMD5      string         `json:"body_md5"`
-	SimHash      uint64         `json:"simhash"`
-	FaviconHash  string         `json:"favicon_hash,omitempty"`
-	TokenCounts  map[string]int `json:"-"`
-	TotalTokens  int            `json:"-"`
-	CertSANs     []string       `json:"cert_sans,omitempty"`
-	IPs          []string       `json:"ips,omitempty"`
-	CDN          string         `json:"cdn,omitempty"`
-	Tech         []string       `json:"tech,omitempty"`
+	Asset       string            `json:"asset"`
+	StatusCode  int               `json:"status"`
+	Title       string            `json:"title"`
+	Headers     map[string]string `json:"headers,omitempty"`
+	BodyPreview string            `json:"body_preview,omitempty"`
+	BodyMD5     string            `json:"body_md5"`
+	SimHash     uint64            `json:"simhash"`
+	FaviconHash string            `json:"favicon_hash,omitempty"`
+	TokenCounts map[string]int    `json:"-"`
+	TotalTokens int               `json:"-"`
+	CertSANs    []string          `json:"cert_sans,omitempty"`
+	IPs         []string          `json:"ips,omitempty"`
+	CDN         string            `json:"cdn,omitempty"`
+	Tech        []string          `json:"tech,omitempty"`
 }
 
 // TriageResult is the final output structure (JSONL to stdout).
@@ -105,8 +105,8 @@ type LLMClassification struct {
 
 // Task is a unit of DAG work. Stage+Asset uniquely identify resumable work.
 type Task struct {
-	Stage   string `json:"stage"`
-	Asset   string `json:"asset"`
+	Stage   string           `json:"stage"`
+	Asset   string           `json:"asset"`
 	Profile ExecutionProfile `json:"-"`
 }
 

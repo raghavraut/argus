@@ -62,7 +62,7 @@ func newScan() *cobra.Command {
 	f := cmd.Flags()
 	f.StringVarP(&o.domain, "domain", "d", "", "target domain (comma-separated; use -l for lists)")
 	f.StringVarP(&o.listFile, "list", "l", "", "BYOS: file with one subdomain/URL per line, injected straight into the DAG (skips enumeration)")
-	f.StringVar(&o.profile, "profile", "standard", "execution profile: stealth|standard|aggressive")
+	f.StringVar(&o.profile, "profile", "standard", "stealth: <=5 threads, no LLM | standard: defaults | aggressive: >=50 threads (no headless crawling yet — see README limitations)")
 	f.StringVar(&o.dbPath, "db", "rarefy.db", "SQLite state path for resume")
 	f.StringVar(&o.campaign, "campaign", "", "campaign id (defaults to -d value or timestamp)")
 	f.StringVar(&o.ollamaURL, "ollama", "http://localhost:11434", "Ollama base URL (empty disables LLM)")
@@ -190,7 +190,11 @@ func runScan(ctx context.Context, args []string, o *scanOpts) error {
 	for _, t := range pending {
 		store.MarkDone(camp, t, "probe")
 	}
-	_ = store.Flush()
+	// Flush is the only fallible state write (MarkDone only buffers in
+	// memory): a silent failure here breaks resume, so warn loudly.
+	if err := store.Flush(); err != nil {
+		log.Printf("WARNING: state flush failed, resume may re-probe: %v", err)
+	}
 	log.Printf("phase-1: got %d responses", len(probed))
 
 	if len(corpus) == 0 {
@@ -259,7 +263,11 @@ func runScan(ctx context.Context, args []string, o *scanOpts) error {
 	if err := ex.Run(ctx); err != nil && ctx.Err() == nil {
 		return fmt.Errorf("dag: %w", err)
 	}
-	_ = store.Flush()
+	// Flush is the only fallible state write (MarkDone only buffers in
+	// memory): a silent failure here breaks resume, so warn loudly.
+	if err := store.Flush(); err != nil {
+		log.Printf("WARNING: state flush failed, resume may re-probe: %v", err)
+	}
 
 	// Graph propagation: interest flows from high-score nodes (BFS, capped).
 	for _, s := range results {

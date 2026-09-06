@@ -21,7 +21,7 @@ func TestMapResultNilTLS(t *testing.T) {
 func TestMapResultTech(t *testing.T) {
 	r := runner.Result{
 		Input: "j.t", StatusCode: 200, Title: "Jenkins",
-		Technologies: []string{"Jenkins", "Groovy"},
+		Technologies:    []string{"Jenkins", "Groovy"},
 		ResponseHeaders: map[string]interface{}{"Server": "Jetty"},
 	}
 	hr := mapResult(r)

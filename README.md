@@ -27,6 +27,20 @@
 
 ---
 
+## ⚠️ Status / Limitations
+
+Young project, honest numbers only:
+
+- **False-positive claims are unproven at scale.** WAF suppression is
+  verified on small corpora plus unit tests; validate on your own target
+  with `rarefy eval --labels labels.jsonl` before trusting the rankings.
+- **Scale characteristics** (measured via `go test -bench`,
+  i3-1115G4): scoring is O(tokens) per asset (~3µs at N=3000 after the
+  precompute fix); engine construction is ~30ms at N=3000 with
+  ClusterKey-bucketed clustering. Corpora above ~50k hosts are untested.
+- **`--profile aggressive` is threads only** — no headless crawling or JS
+  parsing yet (see open issues). `stealth` disables the LLM entirely.
+
 ## ✨ Features
 
 - 🧠 **TF-IDF Rarity Scoring** — campaign-aware IDF with stop-list suppression kills WAF/CDN false positives mathematically, not with regex blocklists.

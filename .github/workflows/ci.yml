@@ -1,0 +1,30 @@
+# Continuous integration: vet + full test suite (with -race) on every
+# push and pull request to main. Tag pushes additionally trigger
+# release.yml (GoReleaser). Local Windows dev boxes lack cgo/gcc, so
+# -race coverage lives here on ubuntu-latest.
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.26"
+          cache: true
+
+      - name: Vet
+        run: go vet ./...
+
+      - name: Test with race detector
+        run: go test -race -count=1 -timeout 600s ./internal/...

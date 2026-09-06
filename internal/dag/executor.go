@@ -1,12 +1,16 @@
 // Package dag provides a bounded, cancellable task executor.
 //
 // Leak fix: exactly `workers` goroutines drain a bounded queue; on context
-// cancellation the queue is closed, workers exit, and Run waits via
-// errgroup semantics. No per-task goroutines are ever spawned.
+// cancellation the queue is closed, workers exit, and Run waits on a
+// WaitGroup (plain sync — no errgroup dependency). No per-task goroutines
+// are ever spawned.
 package dag
 
 import (
 	"context"
+	"errors"
+	"log"
+	"os"
 	"sync"
 
 	"github.com/raghavraut/rarefy/internal/core"
@@ -24,7 +28,9 @@ type Executor struct {
 	handler Handler
 	workers int
 
-	runMu sync.Mutex
+	errMu  sync.Mutex
+	errs   []error
+	logger *log.Logger
 }
 
 var _ core.DAGExecutor = (*Executor)(nil)
@@ -77,10 +83,29 @@ func (e *Executor) ResumeFromState(_ context.Context, _ string) error { return n
 // CloseQueue signals workers to exit after draining.
 func (e *Executor) CloseQueue() { close(e.queue) }
 
+// SetLogger overrides the default stderr logger for handler failures.
+func (e *Executor) SetLogger(l *log.Logger) {
+	e.errMu.Lock()
+	defer e.errMu.Unlock()
+	e.logger = l
+}
+
+func (e *Executor) logf(format string, args ...any) {
+	e.errMu.Lock()
+	l := e.logger
+	if l == nil {
+		l = log.New(os.Stderr, "[dag] ", log.LstdFlags)
+		e.logger = l
+	}
+	e.errMu.Unlock()
+	l.Printf(format, args...)
+}
+
 // Run drains the queue until it is closed or ctx is cancelled.
+// Every handler error is logged at failure time and retained; Run returns
+// their join (or ctx.Err() when cancelled).
 func (e *Executor) Run(ctx context.Context) error {
 	var wg sync.WaitGroup
-	errCh := make(chan error, e.workers)
 	for i := 0; i < e.workers; i++ {
 		wg.Add(1)
 		go func() {
@@ -94,21 +119,20 @@ func (e *Executor) Run(ctx context.Context) error {
 						return
 					}
 					if err := e.handler(ctx, task); err != nil {
-						select {
-						case errCh <- err:
-						default:
-						}
+						e.logf("task %s/%s failed: %v", task.Stage, task.Asset, err)
+						e.errMu.Lock()
+						e.errs = append(e.errs, err)
+						e.errMu.Unlock()
 					}
 				}
 			}
 		}()
 	}
 	wg.Wait()
-	close(errCh)
-	for err := range errCh {
-		if err != nil && ctx.Err() == nil {
-			return err
-		}
+	if ctx.Err() != nil {
+		return ctx.Err()
 	}
-	return ctx.Err()
+	e.errMu.Lock()
+	defer e.errMu.Unlock()
+	return errors.Join(e.errs...)
 }

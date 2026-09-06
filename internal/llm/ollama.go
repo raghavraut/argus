@@ -120,9 +120,9 @@ type message struct {
 }
 
 type chatResponse struct {
-	Message      message `json:"message"`
-	Done         bool    `json:"done"`
-	Error        string  `json:"error,omitempty"`
+	Message message `json:"message"`
+	Done    bool    `json:"done"`
+	Error   string  `json:"error,omitempty"`
 }
 
 func (c *Client) call(ctx context.Context, resp core.HTTPResponse) (core.LLMClassification, error) {

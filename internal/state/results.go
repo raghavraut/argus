@@ -106,7 +106,7 @@ FROM results WHERE campaign=?`)
 	var out []ResultRow
 	for rows.Next() {
 		var (
-			r          ResultRow
+			r                  ResultRow
 			techJ, headJ, blob string
 		)
 		if err := rows.Scan(&r.Result.FinalScore, &r.Result.Confidence,

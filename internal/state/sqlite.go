@@ -25,8 +25,8 @@ const (
 
 // Store tracks completed (campaign, asset, stage) units.
 type Store struct {
-	db     *sql.DB
-	mu     sync.Mutex
+	db      *sql.DB
+	mu      sync.Mutex
 	pending map[string]struct{} // key: campaign+"\x00"+asset+"\x00"+stage
 
 	flushCh chan struct{}

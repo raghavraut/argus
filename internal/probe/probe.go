@@ -73,23 +73,23 @@ func (p *Prober) Probe(ctx context.Context, targets []string, onEach func(core.H
 	)
 
 	options := runner.Options{
-		Methods:                  "GET",
-		InputTargetHost:          goflags.StringSlice(targets),
-		Threads:                  threads,
-		Timeout:                  timeout,
-		Retries:                  p.Retries,
-		ExtractTitle:             true,
-		StatusCode:               true,
-		ContentLength:            true,
-		OutputIP:                 true,
-		OutputCName:              true,
-		Favicon:                  true,
-		TechDetect:               true,
-		ResponseBodyPreviewSize:  100,
+		Methods:                   "GET",
+		InputTargetHost:           goflags.StringSlice(targets),
+		Threads:                   threads,
+		Timeout:                   timeout,
+		Retries:                   p.Retries,
+		ExtractTitle:              true,
+		StatusCode:                true,
+		ContentLength:             true,
+		OutputIP:                  true,
+		OutputCName:               true,
+		Favicon:                   true,
+		TechDetect:                true,
+		ResponseBodyPreviewSize:   100,
 		MaxResponseBodySizeToRead: maxResponseReadBytes,
-		DisableUpdateCheck:       true,
-		Silent:                   true,
-		NoColor:                  true,
+		DisableUpdateCheck:        true,
+		Silent:                    true,
+		NoColor:                   true,
 		// Critical for the Unix contract: httpx prints its own human-readable
 		// line per result via gologger (stdout). We consume OnResult instead,
 		// so suppress all runner-owned stdout; only our JSONL may use it.
@@ -181,7 +181,9 @@ func flattenHeaders(in map[string]interface{}) map[string]string {
 	return out
 }
 
-func keysOf(v interface{}) string { return strings.TrimSpace(strings.Join([]string{strings.TrimSpace(strings.ReplaceAll(sprintf("%v", v), "\n", " "))}, "")) }
+func keysOf(v interface{}) string {
+	return strings.TrimSpace(strings.Join([]string{strings.TrimSpace(strings.ReplaceAll(sprintf("%v", v), "\n", " "))}, ""))
+}
 
 func sprintf(format string, a ...interface{}) string {
 	// tiny fmt.Sprintf wrapper to keep imports obvious

@@ -26,7 +26,7 @@ func NewRoot() *cobra.Command {
 Strict JSONL goes to stdout for Unix pipelines; all logs go to stderr.`,
 		SilenceUsage: true,
 	}
-	root.AddCommand(newScan(), newExport(), newFilter(), newUI(), newDB())
+	root.AddCommand(newScan(), newExport(), newFilter(), newEval(), newUI(), newDB())
 	return root
 }
 

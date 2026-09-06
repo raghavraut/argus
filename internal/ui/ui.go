@@ -172,7 +172,7 @@ func toView(r state.ResultRow, findings int) assetView {
 		Confidence: r.Result.Confidence, Rarity: r.Result.RarityIndex,
 		Status: r.Status, Title: r.Title, Tech: r.Tech,
 		ClusterID: r.Result.ClusterID, Recommendation: r.Result.Recommendation,
-		InBand: triage.InAmbiguityBand(r.Result.FinalScore),
+		InBand:       triage.InAmbiguityBand(r.Result.FinalScore),
 		FindingCount: findings,
 	}
 }

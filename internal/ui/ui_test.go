@@ -144,8 +144,8 @@ func TestAssetDetailAnd404(t *testing.T) {
 	w := httptest.NewRecorder()
 	srv.ServeHTTP(w, r)
 	var d struct {
-		Headers  map[string]string    `json:"headers"`
-		Tech     []string             `json:"tech"`
+		Headers  map[string]string     `json:"headers"`
+		Tech     []string              `json:"tech"`
 		Findings []state.StoredFinding `json:"findings"`
 	}
 	if err := json.Unmarshal(w.Body.Bytes(), &d); err != nil {

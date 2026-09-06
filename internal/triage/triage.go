@@ -231,11 +231,18 @@ const (
 // --- Scorer (additive, capped, explainable) ---
 
 // Engine is the v0.1 TriageEngine: rarity + additive capped signals.
+//
+// Scale notes: rarityNorm bounds (rarityLo/Hi) and per-doc rarity scores
+// are precomputed once in NewEngine, so Score is O(tokens) per call —
+// never O(corpus). See BenchmarkScore.
 type Engine struct {
 	weights   map[string]float64
 	df        map[string]int // document frequency per token (for corpus dumps)
 	numDocs   int
 	byAsset   map[string]core.HTTPResponse
+	rarity    map[string]float64 // per-asset RarityIndex, precomputed
+	rarityLo  float64
+	rarityHi  float64
 	clSizes   map[string]int // clusterID -> size
 	clusterOf map[string]string
 }
@@ -266,50 +273,73 @@ func NewEngine(ctx context.Context, corpus []core.HTTPResponse) (*Engine, error)
 		byAsset: map[string]core.HTTPResponse{},
 		clSizes: map[string]int{},
 	}
-	// Representative clustering: first-seen doc per composite key wins.
-	repKey := map[string]string{} // clusterID -> representative asset
+	// Single clustering pass, bucketed by ClusterKey. ClusterKey equality
+	// is a *necessary* condition for SameCluster (equal favicon, equal
+	// status bucket, equal folded title), so pairwise SameCluster checks
+	// run only within a bucket: ~O(N) for typical multi-cluster corpora.
+	// A degenerate single-bucket corpus degrades to O(N²) comparisons —
+	// measured, not guessed: see BenchmarkNewEngine.
+	buckets := map[string][]core.HTTPResponse{}
+	order := []string{} // first-seen key order keeps assignment deterministic
 	for _, d := range corpus {
 		e.byAsset[d.Asset] = d
-		matched := ""
-		for cid, repAsset := range repKey {
-			if rep, ok := e.byAsset[repAsset]; ok && SameCluster(rep, d) {
-				matched = cid
-				break
-			}
-			_ = cid
+		k := ClusterKey(d)
+		if _, ok := buckets[k]; !ok {
+			order = append(order, k)
 		}
-		if matched == "" {
-			matched = ClusterKey(d)
-			repKey[matched] = d.Asset
-		}
-		e.clSizes[matched]++
-		// stash cluster id via title-suffixed map: keep simple by re-keying
-		// through a second pass below.
-		_ = matched
+		buckets[k] = append(buckets[k], d)
 	}
-	// Second pass: assign each asset its cluster id + size deterministically.
 	e.clusterOf = map[string]string{}
-	reps := []core.HTTPResponse{}
-	for _, d := range corpus {
-		placed := false
-		for _, r := range reps {
-			if SameCluster(r, d) {
-				e.clusterOf[d.Asset] = ClusterKey(r)
-				placed = true
-				break
+	for _, k := range order {
+		// Within a bucket, exact StatusCode and SimHash can still split
+		// the bucket into sub-clusters; suffix their IDs so distinct
+		// surfaces never share an ID.
+		var reps []core.HTTPResponse
+		for _, d := range buckets[k] {
+			placed := false
+			for ri, r := range reps {
+				if SameCluster(r, d) {
+					e.clusterOf[d.Asset] = subClusterID(k, ri)
+					placed = true
+					break
+				}
+			}
+			if !placed {
+				reps = append(reps, d)
+				e.clusterOf[d.Asset] = subClusterID(k, len(reps)-1)
 			}
 		}
-		if !placed {
-			reps = append(reps, d)
-			e.clusterOf[d.Asset] = ClusterKey(d)
-		}
 	}
-	// Recompute sizes from final assignment.
+	// Sizes from final assignment.
 	e.clSizes = map[string]int{}
 	for _, cid := range e.clusterOf {
 		e.clSizes[cid]++
 	}
+	// Rarity bounds, precomputed once: Score must stay O(tokens).
+	rarities := make(map[string]float64, len(e.byAsset))
+	e.rarityLo, e.rarityHi = math.Inf(1), math.Inf(-1)
+	for name, d := range e.byAsset {
+		r := RarityIndex(d, e.weights)
+		rarities[name] = r
+		if r < e.rarityLo {
+			e.rarityLo = r
+		}
+		if r > e.rarityHi {
+			e.rarityHi = r
+		}
+	}
+	e.rarity = rarities
 	return e, nil
+}
+
+// subClusterID names the ri-th sub-cluster inside a ClusterKey bucket.
+// The first keeps the bare key (stable IDs for the common single-cluster
+// case); later ones take "#2", "#3", … via itoa (no fmt needed).
+func subClusterID(key string, ri int) string {
+	if ri == 0 {
+		return key
+	}
+	return key + "#" + itoa(ri+1)
 }
 
 // Weights exposes the IDF table (for tests/debugging).
@@ -323,9 +353,8 @@ func (e *Engine) CalculateTFIDF(ctx context.Context, corpus []core.HTTPResponse)
 //
 //	score = min(1, rarityNorm + loginBonus + debugBonus + apiBonus) * confidence
 //
-// where rarityNorm is min-max normalized RarityIndex across the corpus at
-// Score time (computed lazily per call over byAsset — fine at 5k scale;
-// move to precomputed norm for larger corpora).
+// rarityNorm uses corpus bounds precomputed in NewEngine, so this call is
+// O(tokens in doc) — safe to invoke per asset from the DAG executor.
 func (e *Engine) Score(_ context.Context, asset core.Asset, _ core.EvidenceGraph) (core.TriageResult, error) {
 	resp, ok := e.byAsset[asset.Name]
 	if !ok {
@@ -334,28 +363,15 @@ func (e *Engine) Score(_ context.Context, asset core.Asset, _ core.EvidenceGraph
 			Evidence: []string{"no probe data"},
 		}, nil
 	}
-	rarity := RarityIndex(resp, e.weights)
-	// corpus min-max for normalization
-	lo, hi := math.Inf(1), math.Inf(-1)
-	rarities := map[string]float64{}
-	for name, d := range e.byAsset {
-		r := RarityIndex(d, e.weights)
-		rarities[name] = r
-		if r < lo {
-			lo = r
-		}
-		if r > hi {
-			hi = r
-		}
-	}
+	rarity := e.rarity[asset.Name]
 	var rarityNorm float64
-	if hi > lo {
-		rarityNorm = (rarity - lo) / (hi - lo)
+	if e.rarityHi > e.rarityLo {
+		rarityNorm = (rarity - e.rarityLo) / (e.rarityHi - e.rarityLo)
 	}
 	var (
 		evidence []string
 		bonus    float64
-		conf    = 0.5
+		conf     = 0.5
 	)
 	lower := strings.ToLower(asset.Name + " " + resp.Title + " " + resp.BodyPreview)
 	if strings.Contains(lower, "admin") && strings.Contains(lower, "login") {

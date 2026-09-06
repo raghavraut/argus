@@ -16,10 +16,10 @@ import (
 )
 
 const (
-	numShards      = 32
-	maxPropDepth   = 3
-	minScoreDelta  = 0.01
-	defaultDecay   = 0.5
+	numShards     = 32
+	maxPropDepth  = 3
+	minScoreDelta = 0.01
+	defaultDecay  = 0.5
 )
 
 type nodeEntry struct {
@@ -198,23 +198,18 @@ func (g *MemoryGraph) PropagateScore(ctx context.Context, nodeID string, score f
 		cur := queue[0]
 		queue = queue[1:]
 
-		// Snapshot all outgoing neighbor IDs without holding locks across shards.
+		// Snapshot outgoing neighbor IDs from the FROM shard directly:
+		// AddEdge stores edges under shardFor(from), so exactly one
+		// shard can hold them — no need to scan all 32.
 		var neighborIDs []string
-		for i := range g.shards {
-			sh := g.shards[i]
-			sh.mu.RLock()
-			for _, set := range sh.edges[cur.id] {
-				// edges are stored under the FROM shard, so only one shard hits;
-				// loop is cheap because map lookup misses fast.
-				for to := range set {
-					neighborIDs = append(neighborIDs, to)
-				}
-			}
-			sh.mu.RUnlock()
-			if len(neighborIDs) > 0 {
-				break
+		sh := g.shards[shardFor(cur.id)]
+		sh.mu.RLock()
+		for _, set := range sh.edges[cur.id] {
+			for to := range set {
+				neighborIDs = append(neighborIDs, to)
 			}
 		}
+		sh.mu.RUnlock()
 
 		for _, nid := range neighborIDs {
 			if visited[nid] {

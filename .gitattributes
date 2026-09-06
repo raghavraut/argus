@@ -1,2 +1,4 @@
 # Enforce LF for shell scripts (CRLF breaks shebang execution on Linux).
 *.sh text eol=lf
+# Go sources always LF: keeps gofmt clean on Windows checkouts.
+*.go text eol=lf

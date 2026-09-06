@@ -76,7 +76,7 @@ type Options struct {
 // DefaultOptions returns the bounty-safe baseline.
 func DefaultOptions() Options {
 	return Options{
-		Tags: append([]string{}, DefaultTags...),
+		Tags:        append([]string{}, DefaultTags...),
 		ExcludeTags: append([]string{}, DefaultExcludeTags...),
 		Concurrency: 10, Timeout: DefaultTimeout,
 	}
