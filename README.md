@@ -39,29 +39,16 @@
 
 ## 📦 Installation
 
-**One-line install** (Linux/macOS — lands in `/usr/local/bin`, no Go needed):
+Pick one method. All three end with `rarefy` on your `PATH` — no follow-up setup.
+
+**Prebuilt binary** (Linux/macOS/Windows, no Go needed — recommended):
 
 ```sh
-curl -sL https://raw.githubusercontent.com/raghavraut/rarefy/main/install.sh | bash
-```
-
-<details>
-<summary>Other methods (Go install, manual binary, source)</summary>
-
-**Go install** (Go ≥ 1.26). Keep `-v` so you can watch each package
-compile — the dependency tree takes a few minutes on first install
-and is otherwise silent (and `~/go/bin` must be on your `PATH`):
-
-```sh
-go install -v github.com/raghavraut/rarefy/cmd/rarefy@latest
-```
-
-**Binary release** — Linux, macOS, Windows (amd64/arm64) via [GitHub Releases](https://github.com/raghavraut/rarefy/releases):
-
-```sh
-# linux amd64 example
+# linux amd64 example; pick your asset from
+# https://github.com/raghavraut/rarefy/releases
 curl -sL https://github.com/raghavraut/rarefy/releases/latest/download/rarefy_1.0.0_linux_amd64.tar.gz | tar xz
-./rarefy --help
+sudo mv rarefy /usr/local/bin/
+rarefy --help
 ```
 
 **From source:**
@@ -72,7 +59,14 @@ make build && make test
 sudo make install   # copies ./rarefy to /usr/local/bin
 ```
 
-</details>
+**Go install** (Go ≥ 1.26). Note: `go install` places the binary in
+`~/go/bin`, which is *not* on `PATH` by default — finish with one of:
+
+```sh
+go install -v github.com/raghavraut/rarefy/cmd/rarefy@latest   # -v shows progress; first build takes minutes
+sudo ln -s ~/go/bin/rarefy /usr/local/bin/rarefy               # option A: apt-like, works in every shell
+# or: echo 'export PATH="$PATH:$HOME/go/bin"' >> ~/.zshrc      # option B (use ~/.bashrc for bash)
+```
 
 > First nuclei run needs the template bundle (`nuclei -update-templates`, or pass `--nuclei-templates DIR`). Missing bundle degrades gracefully to zero findings.
 
