@@ -39,9 +39,18 @@
 
 ## 📦 Installation
 
-**Go install** (Go ≥ 1.26). The `-v` flag is intentional — it streams
-each package as it compiles, since the dependency tree takes a few
-minutes on first install and is otherwise silent:
+**One-line install** (Linux/macOS — lands in `/usr/local/bin`, no Go needed):
+
+```sh
+curl -sL https://raw.githubusercontent.com/raghavraut/rarefy/main/install.sh | bash
+```
+
+<details>
+<summary>Other methods (Go install, manual binary, source)</summary>
+
+**Go install** (Go ≥ 1.26). Keep `-v` so you can watch each package
+compile — the dependency tree takes a few minutes on first install
+and is otherwise silent (and `~/go/bin` must be on your `PATH`):
 
 ```sh
 go install -v github.com/raghavraut/rarefy/cmd/rarefy@latest
@@ -60,7 +69,10 @@ curl -sL https://github.com/raghavraut/rarefy/releases/latest/download/rarefy_1.
 ```sh
 git clone https://github.com/raghavraut/rarefy && cd rarefy
 make build && make test
+sudo make install   # copies ./rarefy to /usr/local/bin
 ```
+
+</details>
 
 > First nuclei run needs the template bundle (`nuclei -update-templates`, or pass `--nuclei-templates DIR`). Missing bundle degrades gracefully to zero findings.
 
