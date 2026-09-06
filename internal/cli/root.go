@@ -9,7 +9,9 @@
 package cli
 
 import (
+	"errors"
 	"flag"
+	"fmt"
 	"sort"
 
 	"github.com/spf13/cobra"
@@ -32,6 +34,15 @@ func NewRoot() *cobra.Command {
 		Long: banner + "\n\n" +
 			`Strict JSONL goes to stdout for Unix pipelines; all logs go to stderr.`,
 		SilenceUsage: true,
+		// Bare `rarefy` is a usage error, not a help request: print a
+		// one-line error (never the full guide — that's what -h is for)
+		// plus the update nudge, and exit non-zero.
+		RunE: func(cmd *cobra.Command, _ []string) error {
+			w := cmd.ErrOrStderr()
+			fmt.Fprintln(w, "Error: missing command — see 'rarefy --help' for usage.")
+			printVersionNotice(w, cmd.Root().Version)
+			return errors.New("missing command")
+		},
 	}
 	root.AddCommand(newScan(), newExport(), newFilter(), newEval(), newUI(), newDB())
 	return root
